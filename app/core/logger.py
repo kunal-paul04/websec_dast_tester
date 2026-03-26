@@ -1,6 +1,7 @@
 import logging
 import json
 from datetime import datetime, timezone, timedelta
+import sys
 
 # IST timezone (UTC+5:30)
 IST = timezone(timedelta(hours=5, minutes=30))
@@ -22,12 +23,11 @@ class JsonFormatter(logging.Formatter):
 
 
 def get_logger():
-    logger = logging.getLogger("websec")
+    logger = logging.getLogger("app")
     logger.setLevel(logging.INFO)
 
-    handler = logging.FileHandler("logs/app.log")
+    handler = logging.StreamHandler(sys.stdout)
     handler.setFormatter(JsonFormatter())
-
     logger.addHandler(handler)
 
     return logger
