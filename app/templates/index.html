@@ -1,45 +1,404 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- Required meta tags -->
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>WebSec Tester — Web Security Scanner</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        body {
+            background: #0a0f1e;
+            color: #e2e8f0;
+            font-family: 'Segoe UI', sans-serif;
+            min-height: 100vh;
+            background-image:
+                linear-gradient(rgba(56,189,248,0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(56,189,248,0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
 
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+        /* ---- NAVBAR ---- */
+        .navbar {
+            background: rgba(10,15,30,0.9) !important;
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(56,189,248,0.12);
+        }
+        .navbar-brand {
+            font-weight: 800;
+            font-size: 1.2rem;
+            letter-spacing: -0.5px;
+            color: #e2e8f0 !important;
+        }
+        .navbar-brand span { color: #38bdf8; }
+        .nav-dot {
+            width: 8px; height: 8px;
+            background: #22c55e;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 6px;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
 
-    <title>Web Security Tester - WEBSec Tester</title>
+        /* ---- HERO ---- */
+        .hero {
+            text-align: center;
+            padding: 4rem 1rem 2.5rem;
+        }
+        .hero-badge {
+            display: inline-block;
+            font-size: 0.72rem;
+            font-weight: 600;
+            color: #38bdf8;
+            border: 1px solid rgba(56,189,248,0.3);
+            border-radius: 20px;
+            padding: 5px 16px;
+            margin-bottom: 1.2rem;
+            background: rgba(56,189,248,0.06);
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+        .hero h1 {
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 800;
+            letter-spacing: -0.04em;
+            line-height: 1.1;
+            margin-bottom: 1rem;
+        }
+        .hero h1 .gradient {
+            background: linear-gradient(135deg, #38bdf8, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .hero p {
+            color: #8b9dba;
+            font-size: 0.95rem;
+            max-width: 520px;
+            margin: 0 auto 2.5rem;
+            line-height: 1.7;
+        }
+
+        /* ---- FEATURE PILLS ---- */
+        .feature-pills {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 2.5rem;
+        }
+        .feature-pill {
+            font-size: 0.75rem;
+            padding: 5px 14px;
+            border-radius: 20px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: #94a3b8;
+            white-space: nowrap;
+        }
+
+        /* ---- MAIN CARD ---- */
+        .scan-card {
+            background: #0d1117;
+            border: 1px solid #1e2d40;
+            border-radius: 20px;
+            padding: 2.25rem;
+            box-shadow: 0 8px 40px rgba(0,0,0,0.4);
+            max-width: 700px;
+            margin: 0 auto 4rem;
+        }
+        .scan-card-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #e2e8f0;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .scan-card-title i { color: #38bdf8; }
+
+        /* ---- FORM ---- */
+        .form-label {
+            font-size: 0.78rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #8b9dba;
+            margin-bottom: 0.4rem;
+        }
+        .form-control, .form-select {
+            background: #161c26 !important;
+            border: 1px solid #1e2d40 !important;
+            color: #e2e8f0 !important;
+            border-radius: 10px !important;
+            padding: 0.7rem 1rem !important;
+            font-size: 0.92rem !important;
+            transition: border-color 0.2s, box-shadow 0.2s !important;
+        }
+        .form-control:focus, .form-select:focus {
+            border-color: #38bdf8 !important;
+            box-shadow: 0 0 0 3px rgba(56,189,248,0.12) !important;
+            outline: none !important;
+        }
+        .form-control::placeholder { color: #4a5a70 !important; }
+        .form-select option { background: #161c26; color: #e2e8f0; }
+
+        /* ---- TEST TYPE GRID ---- */
+        .test-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 10px;
+            margin-top: 0.4rem;
+        }
+        .test-option {
+            position: relative;
+        }
+        .test-option input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+            width: 0; height: 0;
+        }
+        .test-option label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #161c26;
+            border: 1px solid #1e2d40;
+            border-radius: 10px;
+            padding: 12px 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+            width: 100%;
+        }
+        .test-option label:hover {
+            border-color: #2d4a6a;
+            background: #111827;
+        }
+        .test-option input[type="radio"]:checked + label {
+            border-color: #38bdf8;
+            background: rgba(56,189,248,0.07);
+            box-shadow: 0 0 0 1px rgba(56,189,248,0.2);
+        }
+        .test-option-icon { font-size: 1.2rem; flex-shrink: 0; }
+        .test-option-text { font-size: 0.82rem; font-weight: 600; color: #e2e8f0; line-height: 1.3; }
+        .test-option-desc { font-size: 0.7rem; color: #4a5a70; margin-top: 1px; }
+
+        /* ---- DIVIDER ---- */
+        .form-divider {
+            border: none;
+            border-top: 1px solid #1e2d40;
+            margin: 1.5rem 0;
+        }
+
+        /* ---- SUBMIT BUTTON ---- */
+        .btn-scan {
+            width: 100%;
+            padding: 0.85rem;
+            font-size: 0.95rem;
+            font-weight: 700;
+            border: none;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #0ea5e9, #6366f1);
+            color: white;
+            letter-spacing: 0.01em;
+            transition: all 0.2s;
+            box-shadow: 0 4px 20px rgba(14,165,233,0.25);
+            cursor: pointer;
+        }
+        .btn-scan:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 28px rgba(14,165,233,0.4);
+            color: white;
+        }
+        .btn-scan:active { transform: translateY(0); }
+
+        /* ---- WARNING BOX ---- */
+        .warning-box {
+            background: rgba(245,158,11,0.07);
+            border: 1px solid rgba(245,158,11,0.2);
+            border-radius: 10px;
+            padding: 0.75rem 1rem;
+            font-size: 0.78rem;
+            color: #fbbf24;
+            margin-top: 1rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+        }
+        .warning-box i { flex-shrink: 0; margin-top: 1px; }
+
+        /* ---- FOOTER ---- */
+        footer {
+            text-align: center;
+            padding: 1.5rem;
+            font-size: 0.78rem;
+            color: #4a5a70;
+            border-top: 1px solid #1e2d40;
+        }
+        footer a { color: #38bdf8; text-decoration: none; }
+    </style>
 </head>
 <body>
-    <div class="container-fluid">
-        <h2 class="text-center">Web Security Tester - WEBSec Tester</h2>
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg sticky-top">
+    <div class="container">
+        <a class="navbar-brand" href="#">
+            <i class="bi bi-shield-lock-fill me-2" style="color:#38bdf8"></i>
+            Web<span>Sec</span> Tester
+        </a>
+        <div class="d-flex align-items-center gap-3">
+            <span style="font-size:0.78rem; color:#4a5a70;">
+                <span class="nav-dot"></span>Ready to scan
+            </span>
+            <a href="/docs" target="_blank" class="btn btn-sm btn-outline-secondary" style="border-color:#1e2d40; color:#8b9dba; font-size:0.78rem;">
+                API Docs <i class="bi bi-box-arrow-up-right ms-1"></i>
+            </a>
+        </div>
+    </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+    <div class="hero-badge"><i class="bi bi-activity me-1"></i> Security Testing Suite</div>
+    <h1>Scan. Detect.<br><span class="gradient">Secure Your Web App.</span></h1>
+    <p>Test websites for CORS issues, SQL injection, insecure headers, and performance bottlenecks. Get a full PDF report instantly.</p>
+
+    <div class="feature-pills">
+        <span class="feature-pill"><i class="bi bi-globe2 me-1"></i>CORS Test</span>
+        <span class="feature-pill"><i class="bi bi-shield-check me-1"></i>Security Headers</span>
+        <span class="feature-pill"><i class="bi bi-database-exclamation me-1"></i>SQL Injection</span>
+        <span class="feature-pill"><i class="bi bi-speedometer2 me-1"></i>Load Test</span>
+        <span class="feature-pill"><i class="bi bi-file-earmark-pdf me-1"></i>PDF Report</span>
+    </div>
+</div>
+
+<!-- SCAN CARD -->
+<div class="container">
+    <div class="scan-card">
+
+        <div class="scan-card-title">
+            <i class="bi bi-search"></i> Configure Your Scan
+        </div>
 
         <form action="/scan" method="post">
-            <div class="form-row">
-                <div class="form-group col-md-2">&nbsp;</div>
-                <div class="form-group col-md-4">
-                    <label for="staticURL">Enter URL</label>
-                    <input type="text" class="form-control" name="url" id="staticURL" placeholder="https://example.com" required>
+
+            <!-- URL INPUT -->
+            <div class="mb-4">
+                <label class="form-label" for="staticURL">
+                    Target URL
+                </label>
+                <div class="input-group">
+                    <span class="input-group-text" style="background:#161c26; border:1px solid #1e2d40; border-right:none; border-radius:10px 0 0 10px; color:#4a5a70;">
+                        <i class="bi bi-globe2"></i>
+                    </span>
+                    <input
+                        type="text"
+                        class="form-control"
+                        name="url"
+                        id="staticURL"
+                        placeholder="https://example.com"
+                        required
+                        style="border-left: none !important; border-radius: 0 10px 10px 0 !important;"
+                    >
                 </div>
-                <div class="form-group col-md-4">
-                    <label for="inputTest">Select Test</label>
-                    <select class="form-control" name="test_type" id="inputTest" required>
-                        <option value="">-- Select a test --</option>
-                        <option value="cors">CORS Test</option>
-                        <option value="header">Header Security</option>
-                        <option value="sqli">SQL Injection Test</option>
-                        <option value="load">Load Test</option>
-                        <option value="all">Run All</option>
-                    </select>
+                <div style="font-size:0.72rem; color:#4a5a70; margin-top:5px;">
+                    <i class="bi bi-info-circle me-1"></i>Only test websites you own or have written permission to test
                 </div>
-                <div class="form-group col-md-2">&nbsp;</div>
-                <div class="form-group col-md-2">&nbsp;</div>
-                <div class="form-group col-md-8 align-self-end">
-                    <button type="submit" class="btn btn-primary mb-2">Run Test</button>
-                </div>
-                <div class="form-group col-md-2">&nbsp;</div>
             </div>
+
+            <hr class="form-divider">
+
+            <!-- TEST TYPE SELECTION -->
+            <div class="mb-4">
+                <label class="form-label">Select Test</label>
+                <div class="test-grid">
+
+                    <div class="test-option">
+                        <input type="radio" name="test_type" id="test-cors" value="cors">
+                        <label for="test-cors">
+                            <span class="test-option-icon">🌐</span>
+                            <div>
+                                <div class="test-option-text">CORS Test</div>
+                                <div class="test-option-desc">Origin misconfigurations</div>
+                            </div>
+                        </label>
+                    </div>
+
+                    <div class="test-option">
+                        <input type="radio" name="test_type" id="test-header" value="header">
+                        <label for="test-header">
+                            <span class="test-option-icon">🛡️</span>
+                            <div>
+                                <div class="test-option-text">Header Security</div>
+                                <div class="test-option-desc">HSTS, CSP, X-Frame</div>
+                            </div>
+                        </label>
+                    </div>
+
+                    <div class="test-option">
+                        <input type="radio" name="test_type" id="test-sqli" value="sqli">
+                        <label for="test-sqli">
+                            <span class="test-option-icon">💉</span>
+                            <div>
+                                <div class="test-option-text">SQL Injection</div>
+                                <div class="test-option-desc">Error & blind detection</div>
+                            </div>
+                        </label>
+                    </div>
+
+                    <div class="test-option">
+                        <input type="radio" name="test_type" id="test-load" value="load">
+                        <label for="test-load">
+                            <span class="test-option-icon">📈</span>
+                            <div>
+                                <div class="test-option-text">Load Test</div>
+                                <div class="test-option-desc">Latency & throughput</div>
+                            </div>
+                        </label>
+                    </div>
+
+                    <div class="test-option">
+                        <input type="radio" name="test_type" id="test-all" value="all" checked>
+                        <label for="test-all">
+                            <span class="test-option-icon">⚡</span>
+                            <div>
+                                <div class="test-option-text">Run All Tests</div>
+                                <div class="test-option-desc">Full security audit</div>
+                            </div>
+                        </label>
+                    </div>
+
+                </div>
+            </div>
+
+            <hr class="form-divider">
+
+            <!-- SUBMIT -->
+            <button type="submit" class="btn-scan">
+                <i class="bi bi-play-fill me-2"></i>Run Security Scan
+            </button>
+
+            <!-- WARNING -->
+            <div class="warning-box">
+                <i class="bi bi-exclamation-triangle-fill"></i>
+                <span>Only test websites you own or have explicit written permission to test. Unauthorized testing may be illegal.</span>
+            </div>
+
         </form>
     </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+    <p>WebSec Tester — Educational Security Testing Tool &nbsp;|&nbsp; Built with <a href="#">FastAPI</a> + <a href="#">Jinja2</a></p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
